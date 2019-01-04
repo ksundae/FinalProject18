@@ -117,6 +117,14 @@ def get_player_cards():
       input2 = int(input("Please input either 1 or 11. "))
     value2 = input2
   return [value1, value2]
+
+def check_value(total_value):
+  if total_value == 21
+    print("Congrats, you got blackjack!")
+  elif total_value > 21:
+    print("You lost because the total value of your hand is bigger than 21!")
+  else:
+    print("What would you like to do now?")
  
 print("Welcome to Blackjack!")
 time.sleep(1)
@@ -132,3 +140,8 @@ else:
   print("Alright, then let's start playing!")
 
 current_hand = get_player_cards()
+total_value = 0
+for value in current_hand:
+  total_value += value
+print(f"The total value of your hand is {total_value}.")
+check_value(total_value)
