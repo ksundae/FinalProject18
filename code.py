@@ -25,6 +25,98 @@ def show_rules():
   print("After you decide to stand, the dealer reveals their face-down card. They can then take additional cards. If they exceed 21 points, then you win.")
   input(">")
   print("The cards from 2 to 10 are worth the number of the card's face value. Face cards (jacks, queens, and kings) are worth 10 points. Aces can be worth 1 or 11 points depending on which prevents the hand from exceeding 21.")
+
+def get_player_cards():
+  deck_of_cards = {
+    'heart': {
+      'ace': 1,
+      'one': 1,
+      'two': 2,
+      'three': 3,
+      'four': 4,
+      'five': 5,
+      'six': 6,
+      'seven': 7,
+      'eight': 8,
+      'nine': 10,
+      'ten': 10,
+      'jack': 10,
+      'queen': 10,
+      'king': 10
+    },
+    'spade': {
+      'ace': 1,
+      'one': 1,
+      'two': 2,
+      'three': 3,
+      'four': 4,
+      'five': 5,
+      'six': 6,
+      'seven': 7,
+      'eight': 8,
+      'nine': 10,
+      'ten': 10,
+      'jack': 10,
+      'queen': 10,
+      'king': 10
+    },
+    'club': {
+      'ace': 1,
+      'one': 1,
+      'two': 2,
+      'three': 3,
+      'four': 4,
+      'five': 5,
+      'six': 6,
+      'seven': 7,
+      'eight': 8,
+      'nine': 10,
+      'ten': 10,
+      'jack': 10,
+      'queen': 10,
+      'king': 10
+    },
+    'diamond': {
+      'ace': 1,
+      'one': 1,
+      'two': 2,
+      'three': 3,
+      'four': 4,
+      'five': 5,
+      'six': 6,
+      'seven': 7,
+      'eight': 8,
+      'nine': 10,
+      'ten': 10,
+      'jack': 10,
+      'queen': 10,
+      'king': 10
+    }
+  }
+  suits = ("heart", "spade", "club", "diamond")
+  suit_choice1 = random.choice(suits)
+  face_value = ("ace", "one", "two", "three", "four", "five", "six", "seven", "eight","nine", "ten", "jack", "queen", "king")
+  card_choice1 = random.choice(face_value)
+  value1 = deck_of_cards[suit_choice1][card_choice1]
+  print(f"{card_choice1} of {suit_choice1}")
+  suit_choice2 = random.choice(suits)
+  card_choice2 = random.choice(face_value)
+  while suit_choice1 == suit_choice2 and card_choice1 == card_choice2:
+    suit_choice2 = random.choice(suits)
+    card_choice2 = random.choice(face_value)
+  value2 = deck_of_cards[suit_choice2][card_choice2]
+  print(f"{card_choice2} of {suit_choice2}")
+  if card_choice1 == "ace":
+    input1 = int(input("Do you want your ace to be worth 1 point or 11 points? "))
+    while input1 != 1 and input1 != 11:
+      input1 = int(input("Please input either 1 or 11. "))
+    value1 = input1
+  if card_choice2 == "ace":
+    input2 = int(input("Do you want your ace to be worth 1 point or 11 points? "))
+    while input2 != 1 and input2 != 11:
+      input2 = int(input("Please input either 1 or 11. "))
+    value2 = input2
+  return [value1, value2]
  
 print("Welcome to Blackjack!")
 time.sleep(1)
@@ -38,3 +130,5 @@ if rules_decision == "Y":
  show_rules()
 else:
   print("Alright, then let's start playing!")
+
+current_hand = get_player_cards()
