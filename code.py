@@ -29,40 +29,70 @@ def show_rules():
 def get_player_cards(cards_to_pick):
   suits = ("heart", "spade", "club", "diamond")
   face_value = ("ace", "one", "two", "three", "four", "five", "six", "seven", "eight","nine", "ten", "jack", "queen", "king")
-  print("These are your cards:")
   time.sleep(1)
   while cards_to_pick > 0:
     suit_choice = random.choice(suits)
     card_choice = random.choice(face_value)
     #if card in dictionary does not exist??
-    print(f"{card_choice} of {suit_choice}")
+    player_hand.append(card_choice + " of " + suit_choice)
     value = deck_of_cards[suit_choice][card_choice]
     if card_choice == "ace":
+      print(player_hand)
       ace_choice = int(input("Do you want your ace to be worth 1 point or 11 points? "))
       while ace_choice != 1 and ace_choice != 11:
         ace_choice = int(input("Please input either 1 or 11. "))
       value = ace_choice
     del deck_of_cards[suit_choice][card_choice]
     cards_to_pick -= 1
-    current_hand.append(value)
-  return current_hand
+    player_value.append(value)
+  return card_choice
 
 def check_value():
   total_value = 0
-  for value in current_hand:
+  for value in player_value:
     total_value += value
   print(f"The total value of your hand is {total_value}.")
   input(">")
   if total_value == 21:
     print("Congrats, you got blackjack!")
+    if dealer_value == 21:
+      print("You and the dealer both got blackjack! You tied!")
+    else:
+      print("You won!")
   elif total_value > 21:
     print("You lost because the total value of your hand is bigger than 21!")
+  elif player_split_choice == "stand":
+    if dealer_value > total_value:
+      print("The dealer's hand beat yours! You lost!")
+    elif dealer_value < total_value:
+      print("You beat the dealer's hand! You won!")
   else:
-    print("What would you like to do now?")
+    print("")
+  return total_value
+
+def get_dealer_cards(cards_to_pick):
+  global dealer_value
+  global this_card
+  suits = ("heart", "spade", "club", "diamond")
+  face_value = ("ace", "one", "two", "three", "four", "five", "six", "seven", "eight","nine", "ten", "jack", "queen", "king")
+  while cards_to_pick > 0:
+    suit_choice = random.choice(suits)
+    card_choice = random.choice(face_value)
+    #if card in dictionary does not exist??
+    this_card = card_choice + " of " + suit_choice
+    dealer_hand.append(this_card)
+    value = deck_of_cards[suit_choice][card_choice]
+    if card_choice == "ace":
+      while dealer_value < 21:
+        value = 11
+    del deck_of_cards[suit_choice][card_choice]
+    cards_to_pick -= 1
+    dealer_value += value
 
 def player_move_choice():
-  input(">")
-  if current_hand[0] == current_hand[1]:
+  player_split_choice = ""
+  time.sleep(1)
+  if player_value[0] == player_value[1]:
     player_split_choice = input("Split, hit, or stand? ").lower()
     while player_split_choice != "split" and player_split_choice != "hit" and player_split_choice != "stand":
       player_split_choice = input("Please choose split, hit, or stand. ")
@@ -84,15 +114,29 @@ def player_move_choice():
       player_stand()
     else:
       print("How did you get here?")
+  return player_split_choice
 
 def player_hit():
-  print("hit")
+  print("These are your cards:")
+  get_player_cards(1)
 
 def player_stand():
-  print("stand")
+  print("Let's check the dealer's hand.")
+  get_dealer_cards(1)
+  print(f"The total value of the dealer's hand is {dealer_value}")
+  input(">")
 
 def player_split():
-  print("split")
+  global hand1
+  global hand2
+  hand1.append(player_hand[0])
+  hand2.append(player_hand[1])
+  get_player_cards(1)
+  hand1.append(this_card)
+  print(hand1)
+  get_player_cards(1)
+  hand2.append(this_card)
+  print(hand2)
 
 deck_of_cards = {
   'heart': {
@@ -160,6 +204,13 @@ deck_of_cards = {
     'king': 10
   }
 }
+player_value = []
+player_hand = []
+dealer_hand = []
+dealer_value = 0
+hand1 = []
+hand2 = []
+player_split_choice = ""
 print("Welcome to Blackjack!")
 time.sleep(1)
 print("Press enter whenever you see a '>' in order to continue reading.")
@@ -172,9 +223,20 @@ if rules_decision == "Y":
  show_rules()
 else:
   print("Alright, then let's start playing!")
-cards_to_pick = 2
-current_hand = []
-current_hand = get_player_cards(cards_to_pick)
+print("These are your cards:")
+card_choice = get_player_cards(2)
+if card_choice != "ace":
+  print(player_hand)
 input(">")
-check_value()
-player_move_choice()
+total_value = check_value()
+print("This is the dealer's hand.")
+get_dealer_cards(1)
+print(dealer_hand)
+print(f"The dealer has a total of {dealer_value} points.")
+while total_value < 21 or player_split_choice != "stand":
+  player_split_choice = player_move_choice()
+  if card_choice != "ace":
+    print("These are your cards:")
+    print(player_hand)
+input(">")
+total_value = check_value()
