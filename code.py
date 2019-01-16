@@ -2,6 +2,7 @@ import time
 import random
 
 def show_rules():
+  """print the rules for the player"""
   print("You will be the player, and you will play against the computer, who will be the dealer.")
   input(">")
   print("Your goal is to collect a hand that is greater than the dealer's hand, but less than a maximum value of 21 points. If you exceed 21 points or are unable to to beat the dealer's hand,then you lose.")
@@ -27,12 +28,10 @@ def show_rules():
   input(">")
 
 def get_player_cards(cards_to_pick):
-  suits = ("heart", "spade", "club", "diamond")
-  face_value = ("ace", "one", "two", "three", "four", "five", "six", "seven", "eight","nine", "ten", "jack", "queen", "king")
   time.sleep(1)
   while cards_to_pick > 0:
-    suit_choice = random.choice(suits)
-    card_choice = random.choice(face_value)
+    suit_choice = random.choice(list(deck_of_cards.keys()))
+    card_choice = random.choice(list(deck_of_cards[suit_choice].keys()))
     #if card in dictionary does not exist??
     player_hand.append(card_choice + " of " + suit_choice)
     value = deck_of_cards[suit_choice][card_choice]
@@ -84,12 +83,9 @@ def get_dealer_cards(cards_to_pick):
   global dealer_value
   global this_card
   global card_choice
-  suits = ("heart", "spade", "club", "diamond")
-  face_value = ("ace", "one", "two", "three", "four", "five", "six", "seven", "eight","nine", "ten", "jack", "queen", "king")
   while cards_to_pick > 0:
-    suit_choice = random.choice(suits)
-    card_choice = random.choice(face_value)
-    #if card in dictionary does not exist??
+    suit_choice = random.choice(list(deck_of_cards.keys()))
+    card_choice = random.choice(list(deck_of_cards[suit_choice].keys()))
     this_card = card_choice + " of " + suit_choice
     dealer_hand.append(this_card)
     value = deck_of_cards[suit_choice][card_choice]
@@ -140,7 +136,9 @@ def player_stand():
     print("The dealer decided to take more cards.")
     while dealer_value < 15:
       get_dealer_cards(1)
+  time.sleep(1)
   print(f"The total value of the dealer's hand is {dealer_value}")
+  time.sleep(1)
   check_value()
 
 def player_split():
