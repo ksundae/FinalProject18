@@ -5,7 +5,9 @@ class Player:
   """class keeping track of traits of the player"""
 
   def __init__(self, name):
+    #list of cards that the player has
     self.hand = []
+    #list of values of the player's cards
     self.values = []
     self.name = name
     self.total_value = 0
@@ -14,10 +16,12 @@ class Player:
     """randomly draws one card from the deck, adds it to the player's hand"""
     time.sleep(1)
     while cards_to_pick > 0:
+      #picks a card from dictionary deck of cards by randomly choosing a suit and card value
       suit_choice = random.choice(list(deck_of_cards.keys()))
       card_choice = random.choice(list(deck_of_cards[suit_choice].keys()))
       self.hand.append(card_choice)
       value = deck_of_cards[suit_choice][card_choice]
+      #let the player choose whether to make the value of the ace 1 or 11
       if card_choice == "ace":
         if self.name == "player":
           print(self.hand)
@@ -26,7 +30,11 @@ class Player:
             ace_choice = int(input("Please input either 1 or 11. "))
           value = ace_choice
         elif self.name == "dealer":
-          value = 11
+          if self.total_value < 11:
+            value = 11
+          else:
+            value = 1
+      #takes card out from deck to prevent it from being chosen again
       del deck_of_cards[suit_choice][card_choice]
       cards_to_pick -= 1
       self.values.append(value)
@@ -44,7 +52,7 @@ class Player:
     input(">")
 
 class Dealer(Player):
-  """class keeping track of traits of the dealer"""
+  """subclass keeping track of traits of the dealer"""
   def __init__(self, name):
     self.hand = []
     self.values = []
@@ -60,8 +68,7 @@ def introduction():
   print("Do you want me to explain the rules?")
   rules_decision = input("Enter Y for yes and N for no. ").title()
   while rules_decision != "Y" and rules_decision != "N":
-    print("Please input either Y or N.")
-    rules_decision = input("Enter Y for yes and N for no. ").title()
+    rules_decision = input("Please input either Y or N. ").title()
   if rules_decision == "Y":
     show_rules()
   else:
@@ -86,11 +93,9 @@ def show_rules():
   input(">")
   print("Stand - you take no more cards and keep your hand.")
   input(">")
-  print("Split - if your hand has two cards of the same value, you can split your hand in two and take two more cards. Your two new hands are played separately.")
-  input(">")
   print("After you decide to stand, the dealer reveals their face-down card. They can then take additional cards. If they exceed 21 points, then you win.")
   input(">")
-  print("The cards from 2 to 10 are worth the number of the card's face value. Face cards (jacks, queens, and kings) are worth 10 points. Aces can be worth 1 or 11 points depending on which prevents the hand from exceeding 21.")
+  print("The cards from 2 to 10 are worth the number of the card's face value. Face cards (jacks, queens, and kings) are worth 10 points. The dealer's aces can be worth 1 or 11 points depending on which prevents the hand from exceeding 21, and the player can choose the value of an ace.")
   print("Got it? Alright, let's begin! Good luck!")
   input(">")
 
@@ -102,12 +107,14 @@ def first_round():
     print(player.hand)
   time.sleep(1)
   player.check_value()
+  #reveals dealer first card if total value is under 21
   if player.total_value < 21:
     print("This is the dealer's first card.")
     dealer.get_cards(1)
     print(dealer.hand)
     time.sleep(1)
     dealer.check_value()
+  #checks if dealer got blackjack if player got blackjack; if yes, dealer and player tie; if not,player wins
   elif player.total_value == 21:
     print("Congrats, you got blackjack!")
     print("This is the dealer's first card.")
@@ -125,32 +132,19 @@ def first_round():
         print("The dealer does not have blackjack! You won!")
 
 def player_move_choice():
-  """lets the player choose a move between hit, stand, and split"""
+  """lets the player choose a move between hit and stand"""
   global player_move
   player_move = ""
   time.sleep(1)
-  if player.hand[0] == player.hand[1] and player.value[0] == player.value[1]:
-    player_move = input("Split, hit, or stand? ").lower()
-    while player_move != "split" and player_move != "hit" and player_move != "stand":
-      player_move = input("Please choose split, hit, or stand. ")
-    if player_move == "split":
-      player_split()
-    elif player_move == "hit":
-      player_hit()
-    elif player_move == "stand":
-      player_stand()
-    else:
-      print("You fell into the void!")
+  player_move = input("Would you like to hit or stand? ").lower()
+  while player_move != "hit" and player_move != "stand":
+    player_move = input("Please choose either hit or stand. ").lower()
+  if player_move == "hit":
+    player_hit()
+  elif player_move == "stand":
+    player_stand()
   else:
-    player_move = input("Would you like to hit or stand? ").lower()
-    while player_move != "hit" and player_move != "stand":
-      player_move = input("Please choose either hit or stand. ").lower()
-    if player_move == "hit":
-      player_hit()
-    elif player_move == "stand":
-      player_stand()
-    else:
-      print("How did you get here?")
+    print("How did you get here?")
   return player_move
 
 def player_hit():
@@ -169,6 +163,7 @@ def player_stand():
   print(dealer.hand)
   time.sleep(1)
   dealer.check_value()
+  #let dealer take more cards if their total value is low
   if dealer.total_value < 15:
     print("The dealer decided to take more cards.")
     while dealer.total_value < 15:
@@ -178,19 +173,6 @@ def player_stand():
       dealer.check_value()
   determine_win_lose()
   time.sleep(1)
-
-def player_split():
-  """global hand1
-  global hand2
-  print("These are your cards:")
-  hand1.append(player_hand[0])
-  hand2.append(player_hand[1])
-  get_player_cards(1)
-  hand1.append(this_card)
-  print(hand1)
-  get_player_cards(1)
-  hand2.append(this_card)
-  print(hand2)"""
 
 def determine_win_lose():
   """compares the totals of the player's hand and the dealer's hand"""
@@ -276,6 +258,7 @@ introduction()
 player = Player("player")
 dealer = Dealer("dealer")
 first_round()
+#lets the player keep hitting until they choose to stand or a total value exceeds 21
 while player_move != "stand" and player.total_value < 21 and dealer.total_value < 21:
   player_move = player_move_choice()
 if player.total_value > 21:
