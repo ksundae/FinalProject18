@@ -143,8 +143,6 @@ def player_move_choice():
     player_hit()
   elif player_move == "stand":
     player_stand()
-  else:
-    print("How did you get here?")
   return player_move
 
 def player_hit():
@@ -164,9 +162,9 @@ def player_stand():
   time.sleep(1)
   dealer.check_value()
   #let dealer take more cards if their total value is low
-  if dealer.total_value < 15:
+  if dealer.total_value < 17:
     print("The dealer decided to take more cards.")
-    while dealer.total_value < 15:
+    while dealer.total_value < 17:
       dealer.get_cards(1)
       print(dealer.hand)
       time.sleep(1)
@@ -176,9 +174,7 @@ def player_stand():
 
 def determine_win_lose():
   """compares the totals of the player's hand and the dealer's hand"""
-  if player.total_value > 21:
-    print("You lost because the total value of your hand is bigger than 21! You lost!")
-  elif dealer.total_value > 21:
+  if dealer.total_value > 21:
     print("The dealer lost because the total value of their hand is bigger than 21! You win!")
   elif dealer.total_value > player.total_value:
     print("The dealer's hand beat yours! You lost!")
